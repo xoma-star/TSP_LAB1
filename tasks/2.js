@@ -1,17 +1,14 @@
-const results = [
-    [26.37, 41.98],
-    [28.00, 43.83],
-    [27.83, 42.83],
-    [31.67, 47.28],
-    [23.50, 38.75],
-    [21.04, 35.12],
-    [16.94, 32.07],
-    [37.56, 54.25],
-    [18.84, 32.70],
-    [25.77, 40.51],
-    [33.52, 49.78],
-    [28.21, 43.84],
-    [28.76, 44.03],
-    [24.60, 39.46],
-    [24.51, 38.78]
-]
+import {results, corCoefs, UTransposed, mathExpects, standardDeviations} from './1.js'
+
+//формула 7.14
+//TODO: в методичке 0.93, здесб 0,99
+const a_2 = corCoefs[0] / (UTransposed[1].map(x => x * x).reduce((a, b) => a + b) / UTransposed[1].length)
+
+const table = results.map(x => x.slice(0, 2)).map(
+    x => {
+        const y = results[0][0] - a_2 * mathExpects[1] * standardDeviations[0] / standardDeviations[1] + a_2 * x[1] * standardDeviations[0] / standardDeviations[1]
+        return [...x, y, x[0] - y]
+    }
+)
+
+export default table

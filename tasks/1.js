@@ -1,6 +1,6 @@
-const transpose = (array) => array[0].map((_, colIndex) => array.map(row => row[colIndex]))
+import transpose from "../common/transpose.js";
 
-const results = [
+export const results = [
     [26.37, 41.98, 17.66, 16.05, 22.85],
     [28.00, 43.83, 17.15, 15.47, 23.25],
     [27.83, 42.83, 15.38, 17.59, 24.55],
@@ -35,6 +35,6 @@ for(const v of results){
     U.push(v.map((x, i) => (x - mathExpects[i]) / standardDeviations[i]))
 }
 
-const UTransposed = transpose(U)
+export const UTransposed = transpose(U)
 export const corCoefs = UTransposed.map(x => x.map((v, i) => v * U[i][0]).reduce((a, b) => a + b) / x.length).slice(1, U.length)
 export const student = corCoefs.map(x => Math.abs(x) * Math.sqrt(U.length - 2) / Math.sqrt(1 - Math.pow(x, 2)))
