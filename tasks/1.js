@@ -18,23 +18,25 @@ export const results = [
     [24.51, 38.78, 25.77, 16.05, 24.48]
 ]
 
-const resultsTransposed = transpose(results)
+export const resultsTransposed = transpose(results)
 
 export const mathExpects = resultsTransposed.map(
     x => x.reduce((a,b) => a + b) / x.length
 )
 
 export const dispersions = resultsTransposed.map(
-    (x, i) => x.map(v => Math.pow(v - mathExpects[i], 2)).reduce((a, b) => a + b) / (x.length - 1)
+    (x, i) => x
+      .map(v => Math.pow(v - mathExpects[i], 2))
+      .reduce((a, b) => a + b) / (x.length - 1)
 )
 
 export const standardDeviations = dispersions.map(x => Math.sqrt(x))
 
-const U = []
-for(const v of results){
-    U.push(v.map((x, i) => (x - mathExpects[i]) / standardDeviations[i]))
-}
+const U = results.map(v => v.map((x, i) => (x - mathExpects[i]) / standardDeviations[i]))
 
 export const UTransposed = transpose(U)
-export const corCoefs = UTransposed.map(x => x.map((v, i) => v * U[i][0]).reduce((a, b) => a + b) / x.length).slice(1, U.length)
+export const corCoefs = UTransposed
+  .map(x => x.map((v, i) => v * U[i][0])
+  .reduce((a, b) => a + b) / x.length)
+  .slice(1, U.length)
 export const student = corCoefs.map(x => Math.abs(x) * Math.sqrt(U.length - 2) / Math.sqrt(1 - Math.pow(x, 2)))
