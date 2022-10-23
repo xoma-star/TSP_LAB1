@@ -1,4 +1,8 @@
 import transpose from "../common/transpose.js";
+import mathExpect from "../common/mathExpect.js"
+import dispersion from "../common/dispersion.js"
+import normalize from "../common/normalize.js"
+import correlation from "../common/correlation.js"
 
 export const results = [
     [26.37, 41.98, 17.66, 16.05, 22.85],
@@ -20,23 +24,15 @@ export const results = [
 
 export const resultsTransposed = transpose(results)
 
-export const mathExpects = resultsTransposed.map(
-    x => x.reduce((a,b) => a + b) / x.length
-)
+export const mathExpects = resultsTransposed.map(x => mathExpect(x))
 
-export const dispersions = resultsTransposed.map(
-    (x, i) => x
-      .map(v => Math.pow(v - mathExpects[i], 2))
-      .reduce((a, b) => a + b) / (x.length - 1)
-)
+export const dispersions = resultsTransposed.map((x, i) => dispersion(mathExpects[i], x))
 
 export const standardDeviations = dispersions.map(x => Math.sqrt(x))
 
-const U = results.map(v => v.map((x, i) => (x - mathExpects[i]) / standardDeviations[i]))
+const U = normalize(results)
 
 export const UTransposed = transpose(U)
-export const corCoefs = UTransposed
-  .map(x => x.map((v, i) => v * U[i][0])
-  .reduce((a, b) => a + b) / x.length)
-  .slice(1, U.length)
+export const corCoefs = correlation(U)[0]
+
 export const student = corCoefs.map(x => Math.abs(x) * Math.sqrt(U.length - 2) / Math.sqrt(1 - Math.pow(x, 2)))
